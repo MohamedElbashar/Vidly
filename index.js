@@ -1,4 +1,5 @@
 /** @format */
+require("express-async-errors");
 const error = require("./middleware/error");
 
 const config = require("config");
