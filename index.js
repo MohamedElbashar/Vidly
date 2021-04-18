@@ -18,6 +18,10 @@ const auth = require("./routes/auth");
 const express = require("express");
 const app = express();
 
+process.on("uncaughtException", (ex) => {
+  console.log("WE GOT AN CAUGHT EXCEPTION");
+  winston.error(ex.message, ex);
+});
 winston.add(winston.transport.File, { filename: "logfile.log" });
 winston.add(winston.transport.mongoDB, { db: "mongodb://localhost/vidly" });
 
