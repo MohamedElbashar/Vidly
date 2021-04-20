@@ -11,7 +11,9 @@ module.exports = function () {
   process.on("unHandledRejection", (ex) => {
     throw ex;
   });
-
+  // winston.configure({
+  //   transports: [new winston.transports.File({ filename: "logfile.log" })],
+  // });
   winston.add(winston.transports.File, { filename: "logfile.log" });
   // winston.add(winston.transports.mongoDB, { db: "mongodb://localhost/vidly" });
 };
