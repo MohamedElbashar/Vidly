@@ -1,7 +1,7 @@
 /** @format */
 const { Rentals } = require("../../models/rental");
 const mongoose = require("mongoose");
-
+const request = require("supertest");
 describe("/api/returns", () => {
   let server;
   let rental;
@@ -10,8 +10,8 @@ describe("/api/returns", () => {
   beforeEach(async () => {
     server = require("../../index");
 
-    customerId = mongoose.ObjectId();
-    movieId = mongoose.ObjectId();
+    customerId = mongoose.Types.ObjectId();
+    movieId = mongoose.Types.ObjectId();
 
     rental = new Rentals({
       customer: {
@@ -28,11 +28,14 @@ describe("/api/returns", () => {
     await rental.save();
   });
   afterEach(async () => {
-    server.close();
+    await server.close();
     await Rentals.remove();
   });
-  it("should be work", async () => {
-    const result = await Rentals.findById(rental._id);
-    expect(result).not.toBeNull;
+  it("should return 401 if the client is not logged in", async () => {
+    const res = await request(server)
+      .post("/api/returns")
+      .send({ customerId, movieId });
+    expect(res.status).toBe(401);
   });
 });
+202 Testing the Authorization
