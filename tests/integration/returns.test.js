@@ -8,12 +8,19 @@ describe("/api/returns", () => {
   let rental;
   let customerId;
   let movieId;
+  let token;
+
+  const exec = () => {
+    return request(server)
+      .post("/api/returns")
+      .set("x-auth-token", token)
+      .send({ customerId, movieId });
+  };
   beforeEach(async () => {
     server = require("../../index");
-
+    token = new User().generateAuthToken();
     customerId = mongoose.Types.ObjectId();
     movieId = mongoose.Types.ObjectId();
-
     rental = new Rentals({
       customer: {
         _id: customerId,
@@ -33,27 +40,18 @@ describe("/api/returns", () => {
     await Rentals.remove();
   });
   it("should return 401 if the client is not logged in", async () => {
-    const res = await request(server)
-      .post("/api/returns")
-      .send({ customerId, movieId });
+    token = "";
+    const res = await exec();
     expect(res.status).toBe(401);
   });
   it("should return 400 if the customerId is not provided", async () => {
-    const token = new User().generateAuthToken();
-
-    const res = await request(server)
-      .post("/api/returns")
-      .set("x-auth-token", token)
-      .send({ movieId });
+    customerId = "";
+    const res = await exec();
     expect(res.status).toBe(400);
   });
   it("should return 400 if the MovieId is not provided", async () => {
-    const token = new User().generateAuthToken();
-
-    const res = await request(server)
-      .post("/api/returns")
-      .set("x-auth-token", token)
-      .send({ customerId });
+    movieId = "";
+    const res = await exec();
     expect(res.status).toBe(400);
   });
 });
