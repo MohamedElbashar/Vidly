@@ -38,4 +38,3 @@ describe("/api/returns", () => {
     expect(res.status).toBe(401);
   });
 });
-202 Testing the Authorization
